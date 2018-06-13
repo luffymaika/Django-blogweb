@@ -1,0 +1,52 @@
+{% load staticfiles%}
+<html>
+	<head>  
+		<meta http-equiv="Content-Type">  
+		<title>用户登录</title>  
+	</head> 
+	<script>
+		var status = {{status|safe}}
+		var message = {{message|safe}}
+		if(status =="fail"){
+			alert(message)
+		}
+	</script>
+	<body>
+		<div>
+			<div>
+				<img src="/static/images/apple.jpg" style="height:100px;width:auto;border:1px solid #808080;"></img>
+			</div>
+			
+		<form style="display:flex;justify-content:center;" action="{% url 'yanzheng' %}" method="post">
+			{% csrf_token %}
+			<div style="height:80%;width:98%;border-top:4px solid red;display:flex;flex-direction:column;">
+				<center>
+				<div style="width:150px;height:35px;line-height:35px;font-size:17px;color:red;border:1px solid #808080;margin:50px 0 50px 0;">
+					<strong>欢迎来到博客王！</strong>
+				</div>
+				<div style="width:320px;height:300px;background-color:pink;padding:30px 10px 10px 10px;">
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:65px;height:45px;line-height:45px;">昵称：</div>
+						<input type="text" name="name" value="" style="height:45px;width:240px;font-size:20px;" />
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:65px;height:45px;line-height:45px;">密码：</div>
+						<input type="password" name="password" value="" style="height:45px;width:240px;font-size:20px;" />
+					</div>
+					<div style="display:flex;flex-direction:column;">
+						<button onclick="log()" style="width:90px;height:45px;font-size:15px;margin:20px 0 10px 0;background-color:white;border:2px solid pink;">登录</button>
+						<div style="margin-top:30px;"><a href="{%url 'lognin' %}" >还没有账号？快注册吧！</a></div>
+					</div>
+					
+				</div>
+				</center>
+			</div>
+        </form>
+			</div>
+		<script>
+			function log(){
+				window.location.href="index.html";
+			}
+		</script>
+	</body>
+</html>

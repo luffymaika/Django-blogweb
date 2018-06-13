@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+</head>
+<body>
+<h1>欢迎来到登录界面</h1>
+    <form action="yanzheng/" method="post">
+        {% csrf_token %}
+        帐号名：<input type="text" name="name">
+        <br>
+        密码：<input type="password" name="password">
+        <br>
+        <input type="submit" name="提交">
+
+    </form>
+    <a href="getarticle/" class="button">文章</a>
+    <button type="button" formaction="getarticle/">请求文章</button>
+</body>
+</html>

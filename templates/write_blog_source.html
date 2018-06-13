@@ -1,0 +1,174 @@
+{% load staticfiles %}
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scale=no" name="viewport"/>
+		<title>博客王</title>
+	</head>
+	<body style="display:flex;flex-direction:rows;">
+		<div style="width:65%;height:98%;border-right:1px solid #808080;">
+			<div style="display:flex;flex-direction:rows;">
+				<div style="display:flex;flex-direction:rows;width:40%;">
+					<img src="/static/images/apple.jpg" style="height:100px;width:46%;border:1px solid #808080;"></img>
+					<div style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;">首页</div>
+					<div style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;">我的博客</div>
+				</div>
+				<div style="display:flex;flex-direction:rows;width:213px;margin-top:60px;margin-left:auto;">
+					<div style="width:40px;height:40px;display:flex;flex-direction:column;">
+						<img src="/static/images/home.png" style="height:20px;width:30px;"></img>
+						<text style="height:20px;font-size:14px;">搜索</text>
+					</div>
+					<div style="width:173px;height:40px;margin-top:9px;">
+						<input type="text" placeholder="单行输入" />
+					</div>
+				</div>
+			</div>
+			<div style="width:90%;margin-left:auto;border-top:3px solid red;">
+				<div style="display:flex;flex-direction:rows;margin-bottom:10px;">
+					<div style="width:100px;height:50px;display:flex;flex-direction:column;">
+					<img src="/static/images/write.png" style="height:30px;width:35px;"></img>
+					<text style="height:20px;font-size:14px;">写博文</text>
+					</div>
+					<div style="width:50px;height:27px;line-height:27px;border:1px solid pink;margin-left:auto;margin-top:auto;
+					margin-right:30px;font-size:14px;padding-left:20px;" onclick="publish()">发表</div>
+				</div>
+			</div>
+			<!--编辑区域-->
+			<div style="display:flex;flex-direction:rows;">
+				<div style="width:15%;height:430px;border-right:1px solid #808080;">
+					<div style="height:20px;width:55%;border:1px solid green;font-size:14px;margin:auto;">可插入信息</div>
+					<div style="display:flex;flex-direction:column;">
+						<img src="/static/images/code.png" style="width:33px;height:auto;margin:auto;"></img>
+						<text style="font-size:14px;margin:auto;">代码</text>
+					</div>
+					<div style="display:flex;flex-direction:column;">
+						<img src="/static/images/address.png" style="width:31px;height:auto;margin:auto;"></img>
+						<text style="font-size:14px;margin:auto;">位置</text>
+					</div>
+					<div style="display:flex;flex-direction:column;">
+						<img src="/static/images/camera.png" style="width:33px;height:auto;margin:auto;"></img>
+						<text style="font-size:14px;margin:auto;">图片</text>
+					</div>
+					<div style="display:flex;flex-direction:column;">
+						<img src="/static/images/music.png" style="width:33px;height:auto;margin:auto;"></img>
+						<text style="font-size:14px;margin:auto;">音乐</text>
+					</div>
+					<div style="display:flex;flex-direction:column;">
+						<img src="/static/images/photograph.png" style="width:33px;height:auto;margin:auto;"></img>
+						<text style="font-size:14px;margin:auto;">视频</text>
+					</div>
+				</div>
+				<textarea name="blog" placeholder="写些什么吧" style="height:400px;width:80%;border:2px solid #808080;
+				margin-left:auto;margin-right:auto;font-size:14px;"></textarea>
+			</div>
+		</div>
+		
+		<!--左半部分-->
+		<div style="width:35%;height:98%;display:flex;justify-content:center;">
+			<div style="width:85%;">
+				<div style="display:flex;flex-direction:rows;">
+					<div style="width:150px;height:20px;border:1px solid #808080;margin-top:30px;">欢迎{{user.name}}回来!</div>
+					<div style="width:70px;display:flex;flex-direction:column;margin-left:auto;">
+						<img src="/static/images/setting.png" style="height:30px;width:35px;margin:auto;"></img>
+						<text style="margin:auto;font-size:14px;">设置</text>
+						<button onclick="logout()">退出登录</button>
+					</div>
+				</div>
+				<div style="background-color:pink;padding:5px;margin-top:20px;">
+					<div style="margin-bottom:20px;"><text style="font-size:14px;">个人信息</text></div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:56px;display:flex;flex-direction:column;">
+							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
+							<text style="font-size:14px;">昵称</text>
+						</div>
+						<div style="line-height:39px;margin-left:20px;">{{user.name}}</div>
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:56px;display:flex;flex-direction:column;">
+							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
+							<text style="font-size:14px;">个性签名</text>
+						</div>
+						<div style="line-height:39px;margin-left:20px;">暂无信息</div>
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:56px;display:flex;flex-direction:column;">
+							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
+							<text style="font-size:14px;">博客数</text>
+						</div>
+						<div style="line-height:39px;margin-left:20px;">暂无信息</div>
+					</div>
+				</div>
+				<div style="margin-top:30px;padding-left:10px;">
+					<div style="font-size:14px;">我的博文时间表</div>
+					<div  style="margin-left:15px;margin-top:20px;">
+						<div>
+							<div style="display:flex;flex-direction:rows;margin:7px 0 7px 0;">
+								<div style="display:flex;flex-direction:column;">
+									<img src="/static/images/camera.png" style="height:20px;width:30px;" ></img>
+									<text style="font-size:14px;">年份</text>
+								</div>
+								<select name="year" style="height:20px;width:120px;margin-top:10px;margin-left:20px;">
+									<option value="2018">2018</option>
+									<script>
+										for(var i=1;i<=5;i++){
+											document.write("<option value='"+(2018-i)+"'>"+(2018-i)+"</option>"+"<br>");
+										}
+									</script>
+								</select>
+							</div>
+						</div>
+						<div>
+							<div style="display:flex;flex-direction:rows;margin:7px 0 7px 0;">
+								<div style="display:flex;flex-direction:column;">
+									<img src="/static/images/camera.png" style="height:20px;width:30px;" ></img>
+									<text style="font-size:14px;">月份</text>
+								</div>
+								<select name="month" style="height:20px;width:120px;margin-top:10px;margin-left:20px;" sele>
+									<option value="1">1</option>
+									<script>
+										for(var i=2;i<=12;i++){
+											document.write("<option value='"+i+"'>"+i+"</option>"+"<br>");
+										}
+									</script>
+								</select>
+							</div>
+						</div>
+						<div>
+							<div style="display:flex;flex-direction:rows;margin:7px 0 7px 0;">
+								<div style="display:flex;flex-direction:column;">
+									<img src="/static/images/camera.png" style="height:20px;width:30px;" ></img>
+									<text style="font-size:14px;">日期</text>
+								</div>
+								<select name="year" style="height:20px;width:120px;margin-top:10px;margin-left:20px;">
+									<script>
+										for(var i=1;i<=31;i++){
+											document.write("<option value='"+i+"'>"+i+"</option>"+"<br>");
+										}
+									</script>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div style="height:100px;border:2px dashed pink;">我是广告位</div>
+				
+			</div>
+			
+		</div>
+		<!--脚本代码-->
+		<script language="javascript" type="text/javascript">
+           function publish(){
+				window.location.href="index.html"; 
+		   }
+		   function logout(){
+				window.location.href="login.html";
+			}
+		</script>
+	</body>
+</html>
+
+
+
+
+
+

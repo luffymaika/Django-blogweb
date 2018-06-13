@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hello my name is luffy</title>
+</head>
+
+<body>
+    <h1>name is :{{name}}</h1>
+    <ul>
+    {% for article in ariticles %}
+        <li><a href="{% url 'detail' article.id %}">{{article.author}}——  {{article.title}}</a></li>
+    {% endfor %}
+    </ul>
+
+    <ul>
+        {% for article in ariticles %}
+        <li><a href="{% url 'detail' article.id %}">{{article.author}}==== {{article.title}}</a></li>
+        {% endfor %}
+    </ul>
+
+    文章总数：{{article_num}}
+
+    <form action="http://localhost:8000/search/" method="get">
+        搜索：<input type="text" name="search"><input type="submit" name="确定">
+    </form>
+    <ul>
+        {% for article in article_search %}
+        <li><a href="{% url 'detail' article.id %}">{{article.author}}==== {{article.title}}</a></li>
+        {% endfor %}
+    </ul>
+
+<p>
+    文正正文：
+    <br>
+    {{article_detil.body | safe}}
+
+</p>
+<p>
+    阅读量：{{article_detil.views }}
+</p>
+<p>
+    评论：
+    用户名:{{name}}
+    评论内容：
+    <form action="{% url 'comment' article_detil.id %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="comment">
+        <input type="submit" name="提交">
+    </form>
+</p>
+</body>
+</html>
