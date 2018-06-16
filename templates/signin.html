@@ -53,6 +53,21 @@
 						<input type="password" name="user_password1" value="" style="height:45px;width:240px;font-size:20px;" id="password_check" onblur="check()"/>
 						<span id="warning">   </span>
 					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:85px;height:45px;line-height:45px;">身份：</div>
+						<input type="text" name="identity" value="" style="height:45px;width:240px;font-size:20px;" id="identity"/>
+						<span id="identity1">   </span>
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:85px;height:45px;line-height:45px;">联系方式：</div>
+						<input type="text" name="contact" value="" style="height:45px;width:240px;font-size:20px;" id="contact"/>
+						<span id="contact1">   </span>
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:85px;height:45px;line-height:45px;">出版商名字：</div>
+						<input type="text" name="publisher" value="" style="height:45px;width:240px;font-size:20px;" id="publisher"/>
+						<span id="publisher1">   </span>
+					</div>
 					<div style="display:flex;flex-direction:column;">
 						<button style="width:90px;height:45px;font-size:15px;margin:20px 0 10px 0;background-color:white;border:2px solid pink;" type="submit">注册</button>
 						<div style="margin-top:10px;"><a href="{%url 'login' %}">已有账号？快来登录吧</a></div>

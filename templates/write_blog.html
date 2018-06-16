@@ -3,17 +3,75 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scale=no" name="viewport"/>
+		<script src="/static/js/jquery-3.3.1.min.js"></script>
 		<title>博客王</title>
+		<style type="text/css">
+			#your-tag:hover{
+				width:50px;
+				height:25px;
+				line-height:25px;
+				border:1px solid pink;
+				background-color:pink;
+				margin-left:5px;
+				font-size:14px;
+				font-weight:bold;
+			}
+			
+			#your-tag{
+				width:50px;
+				height:25px;
+				line-height:25px;
+				border:1px solid pink;
+				background-color:white;
+				margin-left:5px;
+				font-size:14px;
+				font-weight:bold;
+			}
+			#checked_sign{
+				width:50px;
+				height:25px;
+				line-height:25px;
+				font-size:14px;
+				border:1px solid pink;
+				background-color:pink;
+				color:black;
+				margin-left:5px;
+				margin-top:auto;
+				margin-bottom:auto;
+				text-align:center;
+				font-weight:bold;
+			}
+			
+			
+			#index:hover{
+				background-color:#d02866;
+				color:white;
+			}
+			
+			#add{
+				font-size:20px;
+				color:#f1297d;
+				border:1px solid #f1297d;
+				border-radius:50%;
+				width:20px;
+				height:20px;
+				line-height:18px;
+				display:flex;
+				justify-content:center;
+				margin-left:auto;
+			}
+		</style>
 	</head>
 	<body>
-	<form style="display:flex;flex-direction:rows;" action="{% url 'addblog' %}" id="addblog" method="post">
+	<form style="display:flex;flex-direction:rows;width:1300px;"  action="{% url 'addblog' %}" id="addblog" method="post" onsubmit="return getTags()">
 		{% csrf_token %}
+		<!--左半部分-->
 		<div style="width:65%;height:auto;border-right:1px solid #808080;">
 			<div style="display:flex;flex-direction:rows;">
 				<div style="display:flex;flex-direction:rows;width:40%;">
 					<img src="/static/images/apple.jpg" style="height:100px;width:46%;border:1px solid #808080;"></img>
-					<div style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;"><a href="{% url 'home' %}" style="text-decoration:none">首页</a></div>
-					<div style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;">我的博客</div>
+					<div id="index" style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;"><a href="{% url 'home' %}" style="text-decoration:none">首页</a></div>
+					<div id="index" style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;">我的博客</div>
 				</div>
 				<div style="display:flex;flex-direction:rows;width:213px;margin-top:60px;margin-left:auto;">
 					<div style="width:40px;height:40px;display:flex;flex-direction:column;">
@@ -26,47 +84,80 @@
 				</div>
 			</div>
 			<div style="width:90%;margin-left:auto;border-top:3px solid red;">
-				<div style="display:flex;flex-direction:rows;margin-bottom:10px;">
+				<div style="display:flex;flex-direction:column;">
 					<div style="width:65px;height:50px;display:flex;flex-direction:column;">
-					<img src="/static/images/write.png" style="height:30px;width:35px;"></img>
-					<text style="height:20px;font-size:14px;">写博文</text>
+						<img src="/static/images/write.png" style="height:30px;width:35px;"></img>
+						<text style="height:20px;font-size:14px;">写博文</text>
 					</div>
-					<input type="text" name="title" placeholder="请输入标题" value=""  style="height:27px;margin-top:auto;width:300px;"/>
-					<input type="submit" style="width:50px;height:27px;line-height:27px;margin-left:auto;margin-top:auto;
-					margin-right:30px;font-size:14px;display:flex;justify-content:center;" value="发表" />
+					<div style="display:flex;flex-direction:rows;margin-top:10px;">
+						<input type="text" name="title" placeholder="标题是博客的眼睛哦~" value="" style="height:27px;width:500px;border:2px solid #f1297d;"/>
+						<input type="submit" style="width:50px;height:27px;line-height:27px;margin-left:60px;font-size:14px;display:flex;justify-content:center;border:1px solid #f1297d;background-color:white;" value="发表" />
+					</div>
+					<!--已选标签栏-->
+					<div style="display:flex;flex-direction:rows;margin-top:10px;margin-bottom:10px;">
+						<div style="width:70px;height:30px;line-height:30px;border:1px solid #f1297d;margin-right:10px;border-radius:5px;">本文标签</div>
+						<div>
+							<div style="color:#999;font-size:14px;border:2px solid pink;height:27px;line-height:27px;width:390px;display:flex;flex-direction:rows;">
+								<div id="111">给文章加上标签，让更多的人发现您的原创好文</div>
+								<input type="hidden" name="choose_tags" id="choose_tags" value="None!"/>
+								<div id="tags" style="display:flex;flex-direction:rows;"></div>
+								<div style="display:flex;flex-direction:rows;margin-left:auto;margin-top:auto;margin-bottom:auto;">
+									<div id="sign_input"></div>
+									<div id='add' onmousemove='add_my_sign_on()'><strong>+</strong></div>
+								</div>
+							</div>
+						</div>
+						<input placeholder="*最多可选填5个" readonly="readonly" style="width:120px;margin-left:10px;height:20px;margin-bottom:auto;margin-top:auto;"/>
+					</div>
+					<!--标签区域-->
+					<div style="margin-left:80px;margin-bottom:10px;">
+						<div style="height:0px;width:0px;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:10px solid #76f35b;"></div>
+						<div style="width:400px;height:auto;border:1px solid green;background-color:#76f35b;display:flex;flex-direction:rows;padding:20px 0 20px 0;">
+							<div style="font-size:14px;width:33%;border-right:2px solid blue;">
+								<center>
+								<strong style="color:green;font-size:15px;">文学体裁</strong>
+								<div style="display:flex;flex-wrap:wrap;margin-top:10px;margin-left:5px;">
+									<div id="your-tag" onclick="choose_tag(event)">散文</div>
+									<div id="your-tag" onclick="choose_tag(event)">记叙文</div>
+									<div id="your-tag" onclick="choose_tag(event)">议论文</div>
+									<div id="your-tag" onclick="choose_tag(event)">诗歌</div>
+									<div id="your-tag" onclick="choose_tag(event)">小说</div>
+									<div id="your-tag" onclick="choose_tag(event)">戏剧</div>
+								</div>
+								</center>
+							</div>
+							<div style="font-size:14px;width:33%;border-right:2px solid blue;">
+								<center>
+								<strong style="color:green;font-size:15px;">文学基础</strong>
+								<div style="display:flex;flex-wrap:wrap;margin-top:10px;margin-left:5px;">
+									<div id="your-tag" onclick="choose_tag(event)">青春</div>
+									<div id="your-tag" onclick="choose_tag(event)">社会</div>
+									<div id="your-tag" onclick="choose_tag(event)">喜剧</div>
+									<div id="your-tag" onclick="choose_tag(event)">现实</div>
+									<div id="your-tag" onclick="choose_tag(event)">悲惨</div>
+									<div id="your-tag" onclick="choose_tag(event)">休闲</div>
+								</div>
+								</center>
+							</div>
+							<div style="font-size:14px;width:33%;">
+								<center>
+								<strong style="color:green;font-size:15px;">我的</strong>
+								<div id="my_sign" style="display:flex;flex-wrap:wrap;margin-top:10px;margin-left:5px;"></div>
+									<input type="hidden" name="my_tags" id="my_tags" value="No new tag!"/>
+								</center>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<!--编辑区域-->
-			<div style="display:flex;flex-direction:rows;">
-				<div style="width:15%;height:430px;border-right:1px solid #808080;">
-					<div style="height:20px;width:55%;border:1px solid green;font-size:14px;margin:auto;">可插入信息</div>
-					<div style="display:flex;flex-direction:column;">
-						<img src="/static/images/code.png" style="width:33px;height:auto;margin:auto;"></img>
-						<text style="font-size:14px;margin:auto;">代码</text>
-					</div>
-					<div style="display:flex;flex-direction:column;">
-						<img src="/static/images/address.png" style="width:31px;height:auto;margin:auto;"></img>
-						<text style="font-size:14px;margin:auto;">位置</text>
-					</div>
-					<div style="display:flex;flex-direction:column;">
-						<img src="/static/images/camera.png" style="width:33px;height:auto;margin:auto;"></img>
-						<text style="font-size:14px;margin:auto;">图片</text>
-					</div>
-					<div style="display:flex;flex-direction:column;">
-						<img src="/static/images/music.png" style="width:33px;height:auto;margin:auto;"></img>
-						<text style="font-size:14px;margin:auto;">音乐</text>
-					</div>
-					<div style="display:flex;flex-direction:column;">
-						<img src="/static/images/photograph.png" style="width:33px;height:auto;margin:auto;"></img>
-						<text style="font-size:14px;margin:auto;">视频</text>
-					</div>
-				</div>
+			<div style="display:flex;">
 				<textarea name="blog" value="" placeholder="写些什么吧" form="addblog" style="height:400px;width:80%;border:2px solid #808080;
 				margin-left:auto;margin-right:auto;font-size:14px;"></textarea>
 			</div>
 		</div>
 		
-		<!--左半部分-->
+		<!--右半部分-->
 		<div style="width:35%;height:auto;display:flex;justify-content:center;">
 			<div style="width:85%;">
 				<div style="display:flex;flex-direction:rows;">
@@ -81,24 +172,25 @@
 					<div style="margin-bottom:20px;"><text style="font-size:14px;">个人信息</text></div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
+							<img src="./images/nickname.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">昵称</text>
 						</div>
-						<div style="line-height:39px;margin-left:20px;">{{user.name}}</div>
+						<div id="nickname" style="line-height:39px;margin-left:20px;">{{user.name}}</div>
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
+							<img src="./images/my_sign.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">个性签名</text>
 						</div>
-						<div style="line-height:39px;margin-left:20px;">暂无信息</div>
+						<div id="signature" style="line-height:39px;margin-left:20px;">$signature</div>
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
-							<text style="font-size:14px;">博客数</text>
+							<img src="./images/my_works.png" style="height:21px;width:21px;" ></img>
+							<text style="font-size:14px;">作品数</text>
 						</div>
-						<div style="line-height:39px;margin-left:20px;">{{user_article|length}}</div>
+						<!--"?php echo $perinfo[ID];?-->
+						<div id="blog_nums" style="line-height:39px;margin-left:20px;">{{user_articles|length}}</div>
 					</div>
 				</div>
 				<div style="margin-top:30px;padding-left:10px;">
@@ -126,26 +218,124 @@
 					</div>
 				</div>
 				<input value="搜索" style="width:60px;color:#808080;margin-left:100px;text-align:center;" readonly="readonly"/>
-				<div style="height:100px;border:2px dashed pink;">我是广告位</div>
 				
 			</div>
 			
 		</div>
-		</form>
-		<!--脚本代码-->
+	</form>
+	
 		<script language="javascript" type="text/javascript">
-           function publish(){
+			var sign_numbers=0;
+			var sign_check=[];//已选标签
+			var sign_check1=[];
+			var haveAdd=false;//控制是否选中
+			
+           function choose_tag(event){
+				sign_numbers++;
+				//console.log(event.target);
+				console.log(event.srcElement.innerText);
+				var myTarget=event.target;//获取当前我的对象
+				var tag1=event.srcElement.innerText;//获取到的标签值
+				if(sign_numbers==1){
+					document.getElementById("111").innerHTML="";
+				}
+				//判断是否为已选标签
+				for(var i=0;i<sign_check1.length;i++){
+					if(tag1==sign_check1[i]){
+						haveAdd=true;
+					}
+				}
+				if(!haveAdd){//如果还没有选择某标签
+					if(sign_numbers>5){
+						alert("标签不能超过5个");
+						//sign_numbers--;
+					}else{
+						sign_check1.push(tag1);
+						myTarget.style.backgroundColor="pink";
+						document.getElementById("tags").innerHTML+="<input name='article_sign"+sign_numbers+"' readonly='readonly' id="+"checked_sign"+" value="+tag1+">";//显示的标签
+					}
+				}
+				if(haveAdd){//如果是之前已经选择过的标签
+					sign_numbers--;
+					var me=0;
+					myTarget.style.backgroundColor="white";
+					for(var i=0;i<sign_check1.length;i++){
+						if(sign_check1[i]!=tag1 && sign_check1[i]!="2"){
+							for(var k=0;k<sign_check.length;k++){
+								if(sign_check1[i]==sign_check[k]){
+									me=1;
+								}
+							}
+							if(me!=1){
+								sign_check.push(sign_check1[i]);
+							}
+						}
+					}
+					//把当前标签赋给备用标签
+					for(var i=0;i<sign_check1.length;i++){
+						if(i>sign_check.length-1){
+							sign_check1[i]="2";
+						}else{
+							sign_check1[i]=sign_check[i];
+						}
+					}
+					document.getElementById("tags").innerHTML="";
+					for(var i=0;i<sign_check.length;i++){
+						document.getElementById("tags").innerHTML+="<input name='article_sign"+i+"' readonly='readonly' id="+"checked_sign"+" value="+sign_check[i]+">";//显示的标签
+					}
+					sign_numbers=sign_check.length;
+					sign_check=[];
+				}
+				haveAdd=false;
+		   }
+		   //显示出编辑的框
+		   function add_my_sign_on(){
+				document.getElementById("sign_input").innerHTML="<input placeholder='输入自创标签' onblur='create_my_sign(event)' />";
+		   }
+		   function add_my_sign_out(){
+				
+		   }
+		   function create_my_sign(event){
+				console.log(event.target.value);
+				var sign_value=event.target.value;
+				document.getElementById("sign_input").innerHTML="";
+				if(sign_value!=""){
+					document.getElementById("my_sign").innerHTML+="<div id='your-tag' onclick='choose_tag(event)'>"+sign_value+"</div>";
+				}
+		   }
+		   function publish(){
 				window.location.href="index.html"; 
 		   }
 		   function logout(){
 				window.location.href="login.html";
 			}
+
+			function getTags(){
+				var content = document.getElementById("tags").childNodes;   //获取选取标签栏的子节点
+				var submit_tags = document.getElementById("choose_tags");
+				var submit_mine = document.getElementById("my_tags");
+				var mytags = document.getElementById("my_sign").childNodes;
+				var tags = "";
+				var mine = "";
+				for(i=0;i<content.length;i++){		//从子节点中提取出标签值
+					tags += content[i].value+" ";
+				}
+				for(i=0;i<mytags.length;i++){
+					mine += mytags[i].innerHTML+" ";
+				}
+				alert(mine);
+				submit_tags.value = tags;
+				return true;
+			}
+			<!--$(document).ready(function(){-->
+				<!--$("#addblog").submit(function(){-->
+					<!--var tags = $("#tags").html();-->
+					<!--$("input[name=choose_tags]").val(tags);-->
+					<!--return true;-->
+				<!--});-->
+			<!--});-->
+
 		</script>
+		
 	</body>
 </html>
-
-
-
-
-
-

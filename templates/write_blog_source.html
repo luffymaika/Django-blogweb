@@ -5,12 +5,14 @@
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scale=no" name="viewport"/>
 		<title>博客王</title>
 	</head>
-	<body style="display:flex;flex-direction:rows;">
-		<div style="width:65%;height:98%;border-right:1px solid #808080;">
+	<body>
+	<form style="display:flex;flex-direction:rows;" action="{% url 'addblog' %}" id="addblog" method="post">
+		{% csrf_token %}
+		<div style="width:65%;height:auto;border-right:1px solid #808080;">
 			<div style="display:flex;flex-direction:rows;">
 				<div style="display:flex;flex-direction:rows;width:40%;">
 					<img src="/static/images/apple.jpg" style="height:100px;width:46%;border:1px solid #808080;"></img>
-					<div style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;">首页</div>
+					<div style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;"><a href="{% url 'home' %}" style="text-decoration:none">首页</a></div>
 					<div style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;">我的博客</div>
 				</div>
 				<div style="display:flex;flex-direction:rows;width:213px;margin-top:60px;margin-left:auto;">
@@ -25,12 +27,13 @@
 			</div>
 			<div style="width:90%;margin-left:auto;border-top:3px solid red;">
 				<div style="display:flex;flex-direction:rows;margin-bottom:10px;">
-					<div style="width:100px;height:50px;display:flex;flex-direction:column;">
+					<div style="width:65px;height:50px;display:flex;flex-direction:column;">
 					<img src="/static/images/write.png" style="height:30px;width:35px;"></img>
 					<text style="height:20px;font-size:14px;">写博文</text>
 					</div>
-					<div style="width:50px;height:27px;line-height:27px;border:1px solid pink;margin-left:auto;margin-top:auto;
-					margin-right:30px;font-size:14px;padding-left:20px;" onclick="publish()">发表</div>
+					<input type="text" name="title" placeholder="请输入标题" value=""  style="height:27px;margin-top:auto;width:300px;"/>
+					<input type="submit" style="width:50px;height:27px;line-height:27px;margin-left:auto;margin-top:auto;
+					margin-right:30px;font-size:14px;display:flex;justify-content:center;" value="发表" />
 				</div>
 			</div>
 			<!--编辑区域-->
@@ -58,20 +61,20 @@
 						<text style="font-size:14px;margin:auto;">视频</text>
 					</div>
 				</div>
-				<textarea name="blog" placeholder="写些什么吧" style="height:400px;width:80%;border:2px solid #808080;
+				<textarea name="blog" value="" placeholder="写些什么吧" form="addblog" style="height:400px;width:80%;border:2px solid #808080;
 				margin-left:auto;margin-right:auto;font-size:14px;"></textarea>
 			</div>
 		</div>
 		
 		<!--左半部分-->
-		<div style="width:35%;height:98%;display:flex;justify-content:center;">
+		<div style="width:35%;height:auto;display:flex;justify-content:center;">
 			<div style="width:85%;">
 				<div style="display:flex;flex-direction:rows;">
-					<div style="width:150px;height:20px;border:1px solid #808080;margin-top:30px;">欢迎{{user.name}}回来!</div>
+					<div style="width:200px;height:20px;border:1px solid #808080;margin-top:30px;">欢迎{{user.name}}回来!</div>
 					<div style="width:70px;display:flex;flex-direction:column;margin-left:auto;">
 						<img src="/static/images/setting.png" style="height:30px;width:35px;margin:auto;"></img>
 						<text style="margin:auto;font-size:14px;">设置</text>
-						<button onclick="logout()">退出登录</button>
+						<button onclick="window.location.href='{% url 'logout' %}'">退出登录</button>
 					</div>
 				</div>
 				<div style="background-color:pink;padding:5px;margin-top:20px;">
@@ -95,7 +98,7 @@
 							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
 							<text style="font-size:14px;">博客数</text>
 						</div>
-						<div style="line-height:39px;margin-left:20px;">暂无信息</div>
+						<div style="line-height:39px;margin-left:20px;">{{user_article|length}}</div>
 					</div>
 				</div>
 				<div style="margin-top:30px;padding-left:10px;">
@@ -107,14 +110,7 @@
 									<img src="/static/images/camera.png" style="height:20px;width:30px;" ></img>
 									<text style="font-size:14px;">年份</text>
 								</div>
-								<select name="year" style="height:20px;width:120px;margin-top:10px;margin-left:20px;">
-									<option value="2018">2018</option>
-									<script>
-										for(var i=1;i<=5;i++){
-											document.write("<option value='"+(2018-i)+"'>"+(2018-i)+"</option>"+"<br>");
-										}
-									</script>
-								</select>
+								<input name="year" style="height:20px;width:120px;margin-top:10px;margin-left:20px;" value="2018" readonly="readonly"/>
 							</div>
 						</div>
 						<div>
@@ -123,38 +119,19 @@
 									<img src="/static/images/camera.png" style="height:20px;width:30px;" ></img>
 									<text style="font-size:14px;">月份</text>
 								</div>
-								<select name="month" style="height:20px;width:120px;margin-top:10px;margin-left:20px;" sele>
-									<option value="1">1</option>
-									<script>
-										for(var i=2;i<=12;i++){
-											document.write("<option value='"+i+"'>"+i+"</option>"+"<br>");
-										}
-									</script>
-								</select>
+								<input name="month" style="height:20px;width:120px;margin-top:10px;margin-left:20px;" value="6" readonly="readonly"/>
 							</div>
 						</div>
-						<div>
-							<div style="display:flex;flex-direction:rows;margin:7px 0 7px 0;">
-								<div style="display:flex;flex-direction:column;">
-									<img src="/static/images/camera.png" style="height:20px;width:30px;" ></img>
-									<text style="font-size:14px;">日期</text>
-								</div>
-								<select name="year" style="height:20px;width:120px;margin-top:10px;margin-left:20px;">
-									<script>
-										for(var i=1;i<=31;i++){
-											document.write("<option value='"+i+"'>"+i+"</option>"+"<br>");
-										}
-									</script>
-								</select>
-							</div>
-						</div>
+						
 					</div>
 				</div>
+				<input value="搜索" style="width:60px;color:#808080;margin-left:100px;text-align:center;" readonly="readonly"/>
 				<div style="height:100px;border:2px dashed pink;">我是广告位</div>
 				
 			</div>
 			
 		</div>
+		</form>
 		<!--脚本代码-->
 		<script language="javascript" type="text/javascript">
            function publish(){
