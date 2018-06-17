@@ -14,11 +14,12 @@ class Users(models.Model):
     password = models.CharField(max_length=20)
     identity =models.CharField('身份',max_length=1, choices=STATUS, default='w')
     contact_wey = models.CharField('联系方式',max_length=20, default="none")
-    publishers_name = models.CharField('出版商名字', max_length=20, default="none")
+    publishers_ISBN = models.CharField('出版商名字', max_length=20, default="none")
 
 class User_atten(models.Model):
-    article_id = models.IntegerField('用户id')
-    flower_id = models.IntegerField('关注人id')
+    article_id = models.IntegerField('文章id')
+    flower_id = models.CharField('关注人账户名',max_length=20)
+    flower_contact = models.CharField('联系方式',max_length=20, default="none")
     status = models.SmallIntegerField('状态', default=1)
     create_time = models.DateTimeField('创建时间',auto_now_add=True)
 
@@ -82,6 +83,7 @@ class Tag(models.Model):
     tag(标签云)对应的数据库
     """
     name = models.CharField('标签名', max_length=20)
+    creator = models.CharField('创建者名字',max_length=20, null=True)
     created_time = models.DateTimeField('创建时间', auto_now_add=True)
     last_modified_time = models.DateTimeField('修改时间', auto_now=True)
 

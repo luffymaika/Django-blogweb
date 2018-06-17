@@ -9,6 +9,7 @@ import re
 import datetime
 import markdown
 import json
+from django.core import serializers
 
 # Create your views here.
 def index(request):
@@ -88,10 +89,16 @@ def register(request):
         content['status'] = json.dumps("fail")
         return render(request, 'signin.html', content)
         # return HttpResponse("两次密码输入不一致，请重新输入")
-
+    ## 读取前端数据
     username = request.POST['user_name']
     password = request.POST['user_password']
-    newuser = Users(name=username,password=password)
+    if request.POST['identity_2']==2:
+        ISBN = request.POST['publisher_ISBN']
+        contact = request.POST['contact']
+        newuser = Users(name=username, password=password, identity='e', contact_wey=contact, publishers_ISBN=ISBN)
+    else:
+        newuser = Users(name=username,password=password)
+
     try:
         newuser.save(force_insert=True)
     except:
@@ -151,6 +158,8 @@ def articleDetil(request, article_id):
     # content["name"] = request.session["user"]
     # print(markdown.markdown(obj.body))
     comments = obj.blogcomment_set.all().order_by("-created_time")   ## 外键反向匹配，通过文章查询对应的多个comment
+    publishers = User_atten.objects.filter(article_id=obj.id)
+
     username = request.session['user']
     user = Users.objects.filter(name=username)
     content = {}
@@ -160,6 +169,7 @@ def articleDetil(request, article_id):
     user_articles = user[0].article_set.all()
     content['user_articles'] = user_articles
     content['tags'] = obj.tags.all()
+    content['publishers'] = serializers.serialize('json', publishers)
     # content["comment_num"] = len(comments)
     return render(request, 'detail.html', content)
 

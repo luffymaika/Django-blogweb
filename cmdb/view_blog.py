@@ -15,8 +15,17 @@ def add_blog(request):
     title = request.POST['title']
     user_name = request.session['user']
     choose_tags = request.POST['choose_tags']
+    new_tags = request.POST['my_tags']
     choose_tags = choose_tags.strip()
     choose_tags = choose_tags.split()
+    new_tags = new_tags.strip().split()
+    print(new_tags)
+    ## 新标签处理
+    if(len(new_tags)>0):
+        for tag in new_tags:
+            newtag = Tag(name=tag, creator=user_name)
+            newtag.save()
+
     print(choose_tags)
     status = 'p'
     # tag = Tag.objects.get(name = choose_tags[0])
@@ -32,15 +41,15 @@ def add_blog(request):
     else:
         try:
             newarticle.save()
-
+            if len(choose_tags) > 0:
+                for tag in choose_tags:
+                    tag_object = Tag.objects.get(name=tag)
+                    newarticle.tags.add(tag_object)
+                    newarticle.save()
         except:
             return HttpResponse("文章创建出错了")
 
-    if len(choose_tags)>0:
-        for tag in choose_tags:
-            tag_object = Tag.objects.get(name=tag)
-            newarticle.tags.add(tag_object)
-            newarticle.save()
+
 
     # articles = Article.objects.filter(author=username)
     # articles = Article.objects.all()

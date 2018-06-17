@@ -4,7 +4,6 @@
 		<meta charset="UTF-8">
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scale=no" name="viewport"/>
 		<script src="/static/js/jquery-3.3.1.min.js"></script>
-		<script src="/static/js/write_blog.js"></script>
 		<title>博客王</title>
 		<style type="text/css">
 			#your-tag:hover{
@@ -100,7 +99,7 @@
 						<div>
 							<div style="color:#999;font-size:14px;border:2px solid pink;height:27px;line-height:27px;width:390px;display:flex;flex-direction:rows;">
 								<div id="111">给文章加上标签，让更多的人发现您的原创好文</div>
-								<input type="hidden" name="choose_tags" id="choose_tags" value="None!"/>
+								<input type="hidden" name="choose_tags" id="choose_tags" value=""/>
 								<div id="tags" style="display:flex;flex-direction:rows;"></div>
 								<div style="display:flex;flex-direction:rows;margin-left:auto;margin-top:auto;margin-bottom:auto;">
 									<div id="sign_input"></div>
@@ -143,8 +142,10 @@
 							<div style="font-size:14px;width:33%;">
 								<center>
 								<strong style="color:green;font-size:15px;">我的</strong>
-								<div id="my_sign" style="display:flex;flex-wrap:wrap;margin-top:10px;margin-left:5px;"></div>
-									<input type="hidden" name="my_tags" id="my_tags" value="No new tag!"/>
+								<div id="my_sign" style="display:flex;flex-wrap:wrap;margin-top:10px;margin-left:5px;">{% for tag in user_tags %}
+									<div id="your-tag" onclick="choose_tag(event)">{{tag.name}}</div>
+									{% endfor %}</div>
+									<input type="hidden" name="my_tags" id="my_tags" value=""/>
 								</center>
 							</div>
 						</div>
@@ -173,21 +174,21 @@
 					<div style="margin-bottom:20px;"><text style="font-size:14px;">个人信息</text></div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="./images/nickname.png" style="height:21px;width:21px;" ></img>
+							<img src="/static/images/nickname.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">昵称</text>
 						</div>
 						<div id="nickname" style="line-height:39px;margin-left:20px;">{{user.name}}</div>
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="./images/my_sign.png" style="height:21px;width:21px;" ></img>
+							<img src="/static/images/my_sign.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">个性签名</text>
 						</div>
 						<div id="signature" style="line-height:39px;margin-left:20px;">$signature</div>
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="./images/my_works.png" style="height:21px;width:21px;" ></img>
+							<img src="/static/images/my_works.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">作品数</text>
 						</div>
 						<!--"?php echo $perinfo[ID];?-->
@@ -310,6 +311,33 @@
 		   function logout(){
 				window.location.href="login.html";
 			}
+
+			function getTags(){
+	var content = document.getElementById("tags").childNodes;   //获取选取标签栏的子节点
+	var submit_tags = document.getElementById("choose_tags");
+	var submit_mine = document.getElementById("my_tags");
+	var mytags = document.getElementById("my_sign").childNodes;
+	var tags = "";
+	var mine = "";
+	alert("hello");
+	var oldmytags = {{olduser_tags|safe}};	//从服务器处接收原有自创标签
+	for(i=0;i<content.length;i++){		//从子节点中提取出标签值
+		tags += content[i].value+" ";
+	}
+
+	if(oldmytags.length<mytags.length){
+		for(i=oldmytags.length; i<mytags.length;i++){
+			mine += mytags[i].innerHTML+" ";
+		}
+	}
+	// for(i=0;i<mytags.length;i++){
+	// 	mine += mytags[i].innerHTML+" ";
+	// }
+	// alert(mine);
+	submit_tags.value = tags;
+	submit_mine.value = mine;
+	return true;
+}
 
 			<!--function getTags(){-->
 				<!--var content = document.getElementById("tags").childNodes;   //获取选取标签栏的子节点-->

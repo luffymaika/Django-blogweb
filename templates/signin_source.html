@@ -1,0 +1,81 @@
+{% load staticfiles %}
+<html>
+	<head>  
+		<meta http-equiv="Content-Type">  
+		<title>用户登录</title>  
+	</head>
+
+	<script type="text/javascript">
+		var status = {{status|safe}}
+		var message = {{message|safe}}
+		if(status =="fail"){
+			alert(message)
+		}
+	</script>
+
+	<script type="text/javascript">
+	function check(){
+    if(document.getElementById("password").value!=
+        document.getElementById("password_check").value)
+    {
+    	alert("两次密码的输入不一致")
+        <!--document.getElementById("warning").innerHTML="   两次密码的输入不一致";-->
+    }else{
+        document.getElementById("warning").innerHTML="   ";
+    }
+}
+</script>
+
+	<body>
+		<div>
+			<div>
+				<img src="/static/images/apple.jpg" style="height:100px;width:auto;border:1px solid #808080;"></img>
+			</div>
+			
+		<form style="display:flex;justify-content:center;" action="{% url 'register' %}" method="post">
+			{% csrf_token %}
+			<div style="height:80%;width:98%;border-top:4px solid red;display:flex;flex-direction:column;">
+				<center>
+				<div style="width:150px;height:35px;line-height:35px;font-size:17px;color:red;border:1px solid #808080;margin:50px 0 50px 0;">
+					<strong>欢迎来到博客王！</strong>
+				</div>
+				<div style="width:320px;height:300px;background-color:pink;padding:30px 10px 10px 10px;">
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:85px;height:45px;line-height:45px;">昵称：</div>
+						<input type="text" name="user_name" value="" style="height:45px;width:240px;font-size:20px;" />
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:85px;height:45px;line-height:45px;">密码：</div>
+						<input type="password" name="user_password" value="" style="height:45px;width:240px;font-size:20px;" id="password"/>
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:85px;height:45px;line-height:45px;">确认密码：</div>
+						<input type="password" name="user_password1" value="" style="height:45px;width:240px;font-size:20px;" id="password_check" onblur="check()"/>
+						<span id="warning">   </span>
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:85px;height:45px;line-height:45px;">身份：</div>
+						<input type="text" name="identity" value="" style="height:45px;width:240px;font-size:20px;" id="identity"/>
+						<span id="identity1">   </span>
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:85px;height:45px;line-height:45px;">联系方式：</div>
+						<input type="text" name="contact" value="" style="height:45px;width:240px;font-size:20px;" id="contact"/>
+						<span id="contact1">   </span>
+					</div>
+					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
+						<div style="width:85px;height:45px;line-height:45px;">出版商名字：</div>
+						<input type="text" name="publisher" value="" style="height:45px;width:240px;font-size:20px;" id="publisher"/>
+						<span id="publisher1">   </span>
+					</div>
+					<div style="display:flex;flex-direction:column;">
+						<button style="width:90px;height:45px;font-size:15px;margin:20px 0 10px 0;background-color:white;border:2px solid pink;" type="submit">注册</button>
+						<div style="margin-top:10px;"><a href="{%url 'login' %}">已有账号？快来登录吧</a></div>
+					</div>
+				</div>
+				</center>
+			</div>
+        </form>
+		</div>
+	</body>
+</html>

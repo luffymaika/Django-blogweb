@@ -1,10 +1,29 @@
-{% load staticfiles %}
+﻿{% load staticfiles %}
 <html>
 	<head>  
 		<meta http-equiv="Content-Type">  
 		<title>用户登录</title>  
 	</head>
-
+	<script>
+		var identity=1;
+		function choose_identity_1(){
+			submit_identy = document.getElementById("identity_2");
+			submit_identy.value = 1;
+			identity=1;
+			document.getElementById("sign_name_part").innerHTML="<div id='nickname' style='display:flex;flex-direction:rows;margin:10px 0 10px 0;'></div>";
+			document.getElementById("nickname").innerHTML="<div id='nickname' style='display:flex;flex-direction:rows;margin:10px 0 10px 0;'></div><div style='width:100px;height:45px;line-height:45px;background-color:white;'>昵称：</div><input type='text' name='user_name' value='' style='height:45px;width:240px;font-size:20px;margin-left:5px;' />";
+			}
+		function choose_identity_2(){
+			identity=2;
+			submit_identy = document.getElementById("identity_2");
+			submit_identy.value = 2;
+			document.getElementById("sign_name_part").innerHTML="<div id='publisher_name' style='display:flex;flex-direction:rows;margin:10px 0 10px 0;'></div><div id='publisher_ISBN' style='display:flex;flex-direction:rows;margin:10px 0 10px 0;'></div><div id='publisher_tel' style='display:flex;flex-direction:rows;margin:10px 0 10px 0;'></div>";
+			document.getElementById("publisher_name").innerHTML="<div style='width:100px;height:45px;line-height:45px;background-color:white;'>出版商名称：</div><input type='text' name='user_name' value='' style='height:45px;width:240px;font-size:20px;margin-left:5px;' id='publisher'/><span id='publisher1'>   </span>";
+			document.getElementById("publisher_ISBN").innerHTML="<div style='width:100px;height:45px;line-height:45px;background-color:white;'>ISBN编码：</div><input type='text' name='publisher_ISBN' value='' style='height:45px;width:240px;font-size:20px;margin-left:5px;' />";
+			document.getElementById("publisher_tel").innerHTML="<div style='width:100px;height:45px;line-height:45px;background-color:white;'>联系方式：</div><input type='text' name='contact' value='' style='height:45px;width:240px;font-size:20px;margin-left:5px;' id='contact'/><span id='contact1'>   </span>";
+		}
+		
+	</script>
 	<script type="text/javascript">
 		var status = {{status|safe}}
 		var message = {{message|safe}}
@@ -23,10 +42,13 @@
     }else{
         document.getElementById("warning").innerHTML="   ";
     }
+    if(document.getElementById("user_name")==""){
+    	alert("请输入账户名")
+    }
 }
 </script>
 
-	<body>
+	<body onload="choose_identity_1()">
 		<div>
 			<div>
 				<img src="/static/images/apple.jpg" style="height:100px;width:auto;border:1px solid #808080;"></img>
@@ -36,37 +58,32 @@
 			{% csrf_token %}
 			<div style="height:80%;width:98%;border-top:4px solid red;display:flex;flex-direction:column;">
 				<center>
-				<div style="width:150px;height:35px;line-height:35px;font-size:17px;color:red;border:1px solid #808080;margin:50px 0 50px 0;">
-					<strong>欢迎来到博客王！</strong>
+				<div style="width:200px;height:35px;line-height:35px;font-size:17px;color:red;border:1px solid #808080;margin:50px 0 50px 0;">
+					<strong>欢迎来到温雪纷飞！</strong>
 				</div>
-				<div style="width:320px;height:300px;background-color:pink;padding:30px 10px 10px 10px;">
+				<div style="width:360px;height:auto;background-color:pink;padding:30px 70px 10px 70px;">
+					<div style="display:flex;flex-direction:rows;">
+						<div style="width:80px;height:35px;line-height:35px;background-color:white;">我是：</div>
+						<div style="height:35px;line-height:35px;margin-left:30px;display:flex;flex-direction:rows;">
+							<div style="display:flex;flex-direction:rows;">
+								<input type="radio" name="identity_1" onclick="choose_identity_1()"/>
+								<div style="width:60px;background-color:white;color:red;">作者</div>
+							</div>
+							<div style="display:flex;flex-direction:rows;">
+								<input type="radio" name="identity_2" id="identity_2" onclick="choose_identity_2()"/>
+								<div style="width:60px;background-color:white;color:red;">出版商</div>
+							</div>
+						</div>
+					</div>
+					<div id="sign_name_part"></div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
-						<div style="width:85px;height:45px;line-height:45px;">昵称：</div>
-						<input type="text" name="user_name" value="" style="height:45px;width:240px;font-size:20px;" />
+						<div style="width:100px;height:45px;line-height:45px;background-color:white;">密码：</div>
+						<input type="password" name="user_password" value="" style="height:45px;width:240px;font-size:20px;margin-left:5px;" id="password"/>
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
-						<div style="width:85px;height:45px;line-height:45px;">密码：</div>
-						<input type="password" name="user_password" value="" style="height:45px;width:240px;font-size:20px;" id="password"/>
-					</div>
-					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
-						<div style="width:85px;height:45px;line-height:45px;">确认密码：</div>
-						<input type="password" name="user_password1" value="" style="height:45px;width:240px;font-size:20px;" id="password_check" onblur="check()"/>
+						<div style="width:100px;height:45px;line-height:45px;background-color:white;">确认密码：</div>
+						<input type="password" name="user_password1" value="" style="height:45px;width:240px;font-size:20px;margin-left:5px;" id="password_check" onblur="check()"/>
 						<span id="warning">   </span>
-					</div>
-					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
-						<div style="width:85px;height:45px;line-height:45px;">身份：</div>
-						<input type="text" name="identity" value="" style="height:45px;width:240px;font-size:20px;" id="identity"/>
-						<span id="identity1">   </span>
-					</div>
-					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
-						<div style="width:85px;height:45px;line-height:45px;">联系方式：</div>
-						<input type="text" name="contact" value="" style="height:45px;width:240px;font-size:20px;" id="contact"/>
-						<span id="contact1">   </span>
-					</div>
-					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
-						<div style="width:85px;height:45px;line-height:45px;">出版商名字：</div>
-						<input type="text" name="publisher" value="" style="height:45px;width:240px;font-size:20px;" id="publisher"/>
-						<span id="publisher1">   </span>
 					</div>
 					<div style="display:flex;flex-direction:column;">
 						<button style="width:90px;height:45px;font-size:15px;margin:20px 0 10px 0;background-color:white;border:2px solid pink;" type="submit">注册</button>
