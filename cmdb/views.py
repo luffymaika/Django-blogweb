@@ -108,7 +108,7 @@ def register(request):
 
     content["user"] = user[0]
     content["articles"] = articles
-    user_articles = user.article_set.all()
+    user_articles = user[0].article_set.all()
     content['user_articles'] = user_articles
     # content['article_num'] = len(articles)
     return render(request, 'index.html', content)

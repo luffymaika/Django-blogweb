@@ -4,6 +4,7 @@
 		<meta charset="UTF-8">
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scale=no" name="viewport"/>
 		<script src="/static/js/jquery-3.3.1.min.js"></script>
+		<script src="/static/js/write_blog.js"></script>
 		<title>博客王</title>
 		<style type="text/css">
 			#your-tag:hover{
@@ -310,23 +311,23 @@
 				window.location.href="login.html";
 			}
 
-			function getTags(){
-				var content = document.getElementById("tags").childNodes;   //获取选取标签栏的子节点
-				var submit_tags = document.getElementById("choose_tags");
-				var submit_mine = document.getElementById("my_tags");
-				var mytags = document.getElementById("my_sign").childNodes;
-				var tags = "";
-				var mine = "";
-				for(i=0;i<content.length;i++){		//从子节点中提取出标签值
-					tags += content[i].value+" ";
-				}
-				for(i=0;i<mytags.length;i++){
-					mine += mytags[i].innerHTML+" ";
-				}
-				alert(mine);
-				submit_tags.value = tags;
-				return true;
-			}
+			<!--function getTags(){-->
+				<!--var content = document.getElementById("tags").childNodes;   //获取选取标签栏的子节点-->
+				<!--var submit_tags = document.getElementById("choose_tags");-->
+				<!--var submit_mine = document.getElementById("my_tags");-->
+				<!--var mytags = document.getElementById("my_sign").childNodes;-->
+				<!--var tags = "";-->
+				<!--var mine = "";-->
+				<!--for(i=0;i<content.length;i++){		//从子节点中提取出标签值-->
+					<!--tags += content[i].value+" ";-->
+				<!--}-->
+				<!--for(i=0;i<mytags.length;i++){-->
+					<!--mine += mytags[i].innerHTML+" ";-->
+				<!--}-->
+				<!--alert(mine);-->
+				<!--submit_tags.value = tags;-->
+				<!--return true;-->
+			<!--}-->
 			<!--$(document).ready(function(){-->
 				<!--$("#addblog").submit(function(){-->
 					<!--var tags = $("#tags").html();-->
