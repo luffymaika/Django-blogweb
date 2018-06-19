@@ -9,6 +9,9 @@ import re
 import datetime
 import markdown
 from cmdb import views
+from django.http import JsonResponse
+from django.core import serializers
+import json
 
 # Create your views here.
 ## 测试用例
@@ -45,3 +48,22 @@ def addComment(request, article_id):
         return HttpResponse("评论保存出错了")
 
     return views.articleDetil(request, article_id)
+
+def ajax_addComment(request, article_id):
+    comment = request.POST['comment']
+    user_name = request.session['user']
+    article_list = Article.objects.filter(id=article_id)
+    user_list = Users.objects.filter(name=user_name)
+    blogcomments = BlogComment.objects.filter(body=comment).filter(article=article_list[0]).filter(
+        user_name=user_list[0])
+    if len(blogcomments) >= 1:
+        return HttpResponse()
+    newcomment = BlogComment(user_name=user_list[0], body=comment, article=article_list[0])
+    try:
+        newcomment.save()
+    except:
+        return HttpResponse("评论保存出错了")
+    time = datetime.datetime.now().strftime('%Y-%m-%d')
+    data = {'comment':comment, 'time':time}
+    return JsonResponse(data)
+    # return HttpResponse(json.dumps(data), content_type='application/json')

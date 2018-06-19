@@ -3,6 +3,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scale=no" name="viewport"/>
+		<script src="/static/js/jquery-3.3.1.min.js"></script>
+		<script src="/static/js/detail.js"></script>
 		<title>博客王</title>
 		<style type="text/css">
 			#index:hover{
@@ -15,10 +17,85 @@
 			}
 		</style>
 		<script>
-			var show_publisher;
+			var identity={{identity|safe}};
+			<!--alert(identity);-->
+			<!--var interest_nums=0;-->
+			var interest_nums= {{interest|safe}}
+			var interested_it = {{interest|safe}}
+			<!--alert(interest_nums);-->
+			window.onload=function(){
+			var the_str="";
+			if(interested_it==0){
+				the_str="/static/images/heart_off.png";
+			}
+			if(interested_it==1){
+				the_str="/static/images/heart.png";
+			}
+			
+			if(identity=='w'){//作者能够看到
+				document.getElementById("ok_no").innerHTML="<div id='11_1' style='display:flex;flex-direction:rows;margin-left:auto;margin-right:130px;border-bottom:2px solid red;' onmousemove='haha()' onmouseout='nohaha()'></div><div id='publish'></div>";
+				document.getElementById("11_1").innerHTML="<div id='11_2' style='display:flex;flex-direction:column;width:50px;'></div><text style='margin-top:auto;margin-bottom:auto;margin-left:20px;'>$2</text>";
+				document.getElementById("11_2").innerHTML="<img src='/static/images/message.png' style='margin:auto;'></img><div style='width:50px;'>感兴趣请联系</div>";
+			}
+			if(identity=='e'){//出版商能够看到
+				document.getElementById("ok_no").innerHTML="<div id=12_1 style='width:50px;border-bottom:2px solid red;display:flex;flex-direction:column;' onclick='interest()'></div>";
+				document.getElementById("12_1").innerHTML="<img src="+the_str+"  style='margin-top:auto;width:32px;height:30px;margin-left:auto;margin-right:auto;'></img><div>感兴趣</div>";
+			}
+			
+			}
+			//// 用于出版商访问时记录是否感兴趣
+			function interest(){
+				interest_nums++;
+				var text;
+				console.log(interest_nums);
+				if(interest_nums%2==1){
+					interested_it=1;		//1表示感兴趣
+					var the_str="";
+					document.getElementById("is_interested").value=1;
+					text = 1;
+					if(interested_it==0){
+						the_str="/static/images/heart_off.png";
+					}
+					if(interested_it==1){
+						the_str="/static/images/heart.png";
+					}
+				}else{
+					interested_it=0;		//0表示不感兴趣
+					var the_str="";
+					document.getElementById("is_interested").value=0;
+					text = 0;
+					if(interested_it==0){
+						the_str="/static/images/heart_off.png";
+					}
+					if(interested_it==1){
+						the_str="/static/images/heart.png";
+					}
+				}
+				$(document).ready(function(){
+					$.ajaxSetup({
+						data:{csrfmiddlewaretoken:'{{ csrf_token }}'},
+					});
+					$.ajax({
+						url:"{% url 'interest' article.id %}",
+						type:"post",
+						data:{
+							is_interested:text
+						},
+						success:function(data){
+							alert(data);
+						},
+						error:function(){
+							alert("false");
+						}
+					});
+				});
+				document.getElementById("ok_no").innerHTML="<div id=12_1 style='width:50px;border-bottom:2px solid red;display:flex;flex-direction:column;' onclick='interest()'></div>";
+				document.getElementById("12_1").innerHTML="<img src="+the_str+"  style='margin-top:auto;width:30px;height:30px;margin-left:auto;margin-right:auto;'></img><div>感兴趣</div>";
+			}
+			
 		</script>
 	</head>
-	<body  style="display:flex;flex-direction:rows;width:1300px;">
+	<body  style="display:flex;flex-direction:rows;width:1300px;" >
 	
 		<div style="width:65%;height:auto;border-right:1px solid #808080;">
 			<div style="display:flex;flex-direction:rows;">
@@ -39,6 +116,8 @@
 				<input type="submit" value="搜索" style="height:22px;margin-top:68px;"/>
 			</div>
 			<div style="width:90%;margin-left:auto;border-top:3px solid red;">
+			<form action="{% url 'interest' article.id %}" method="post" name="save_detail" id="save_detail">
+				{% csrf_token %}
 				<!--标题、作者和日期-->
 				<div style="display:flex;flex-direction:rows;margin-bottom:20px;">
 					<div style="width:auto;height:50px;display:flex;flex-direction:column;margin-top:20px;margin-bottom:20px;">
@@ -50,17 +129,12 @@
 							<div style="font-size:14px;margin-left:auto;">{{article.created_time}}</div>
 						</div>
 					</div>
+					<!--出版商点赞或作者收看感兴趣数部分-->
+					<div id="ok_no" style="display:flex;margin-left:50px;"></div>
 					
-					<div style="display:flex;flex-direction:rows;margin-left:auto;margin-right:130px;border-bottom:2px solid red;" onmousemove="haha()" onmouseout="nohaha()">
-						<div style="display:flex;flex-direction:column;width:50px;">
-							<img src="/static/images/message.png" style="margin:auto;"></img>
-							<div style="width:50px;">感兴趣请联系</div>
-						</div>
-						<text style="margin-top:auto;margin-bottom:auto;margin-left:20px;">$2</text>
-					</div>
-					<div id="publish"></div>
 					<!--弹出出版商部分-->
-					
+					<input id="is_interested" type="text" value="" name="is_interested" hidden="hidden" />
+					<!--<input type="submit">-->
 				</div>
 				<!--标签和点赞-->
 				<div style="display:flex;width:85%">
@@ -71,6 +145,7 @@
 						{% for tag in tags %}
 						<text style="font-size:13px;height:20px;width:auto;background-color:pink;padding:0 10px 0 10px;"><strong>{{tag.name}}</strong></text>
 						{% endfor %}
+						<text style="font-size:13px;height:20px;width:auto;background-color:pink;padding:0 10px 0 10px;"><strong>青春</strong></text>
 					</div>
 					<div style="display:flex;flex-direction:rows;">
 						<div style="width:35px;height:50px;display:flex;flex-direction:column;" onclick="favor()">
@@ -83,6 +158,8 @@
 						</div>
 					</div>
 				</div>
+				<input id="is_favor" type="text" value="" name="is_favor" hidden="hidden" />
+			</form>
 				<!--文章区-->
 				<div style="width:85%;border:2px solid pink;margin:0 0 10px 0;font-size:16px;">
 					<div style="width:100%;padding:10px;">{{article.body|safe}}</div>
@@ -99,13 +176,14 @@
 
 							<div>{{user.name}}</div>
 						</div>
-					<form action="{% url 'add_comment' article.id%}" method="post">
+					<!--<form action="{% url 'ajax_addcomment' article.id %}" method="post">-->
+						<form>
 						{% csrf_token %}
 						<div style="display:flex;flex-direction:rows;">
 							<div style="font-size:14px;width:40px;">评论:</div>
-							<textarea name="comment" value="" style="width:55%;" rows="4"></textarea>
+							<textarea name="comment" value="" style="width:55%;" rows="4" id="comment"></textarea>
 						</div>
-						<button style="margin-top:10px;">发表</button>
+						<button type="submit" style="margin-top:10px;" id="sent_comment">发表</button>
 						<!--<div style="font-size:14px;align:center;width:120px;margin:auto;">共{{comments|length}}条评论</div>-->
 						<!--&lt;!&ndash;<div style="color:#808080;font-size:14px;">暂无评论</div>&ndash;&gt;-->
 						<!--{% for comment in comments %}-->
@@ -121,9 +199,10 @@
 				<div style="margin:10px 0 10px 0;border-top:1px solid red;width:85%;">
 					<div style="display:flex;flex-direction:rows;margin:20px 0 15px 0;">
 						<text style="color:#f1297d;font-size:16px;"><strong>最新评论</strong></text>
-						<div style="font-size:14px;align:center;width:200px;border:1px solid #f1297d;">共{{comments|length}}条评论</div>
+						<div style="font-size:14px;align:center;width:200px;border:1px solid #f1297d;" id="num">共{{comments|length}}条评论</div>
 					</div>
 					<!--评论循环的主体-->
+					<div id="for_comment">
 					{% for comment in comments %}
 					<div style="margin-top:10px;">
 						<div style="display:flex;flex-direction:rows;">
@@ -133,6 +212,7 @@
 						<div style="font-size:14px;border-bottom:1px solid #999;padding-bottom:5px;">{{comment.body}}</div>
 					</div>
 					{% endfor %}
+				</div>
 				</div>
 				
 			</div>
@@ -152,7 +232,7 @@
 					<div style="margin-bottom:20px;"><text style="font-size:14px;">个人信息</text></div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="./images/nickname.png" style="height:21px;width:21px;" ></img>
+							<img src="/static/images/nickname.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">昵称</text>
 						</div>
 						<!--<div style="line-height:39px;margin-left:20px;">{{user.name}}</div>-->
@@ -160,14 +240,14 @@
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="./images/my_sign.png" style="height:21px;width:21px;" ></img>
+							<img src="/static/images/my_sign.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">个性签名</text>
 						</div>
 						<div style="line-height:39px;margin-left:20px;">暂无信息</div>
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="./images/my_works.png" style="height:21px;width:21px;" ></img>
+							<img src="/static/images/my_works.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">作品数</text>
 						</div>
 						<div style="line-height:39px;margin-left:20px;">{{user_articles|length}}</div>
@@ -200,22 +280,18 @@
 				<input value="搜索" style="width:60px;color:#808080;margin-left:100px;text-align:center;" readonly="readonly"/>
 				<div style="height:auto;border:2px dashed pink;margin-top:50px;">
 					<div>
-						<img src="./images/heart.png"></img>
+						<img src="/static/images/heart.png"></img>
 						<text style="color:#f1297d;">为您推荐</text>
 					</div>
 					<!--推荐部分的主体-->
+					{% for rec_article in recommend %}
 					<div style="width:95%;height:auto;border:2px solid pink;margin:10px 0 10px 0;display:flex;flex-direction:column;padding:3px;margin-top:5px;">
-						<div><a style="font-size:14px;font-family:宋体;color:black;" href="{% url 'detail' article.id %}"><strong>{{article.title}}</strong></a></div>
+						<div><a style="font-size:14px;font-family:宋体;color:black;" href="{% url 'detail' rec_article.id %}"><strong>{{rec_article.title}}</strong></a></div>
 						<div style="margin-left:auto;font-size:8px;color:#999;">
-							<text name="article_views" style="margin-left:10px;">浏览量:{{article.views}}</text>
+							<text name="article_views" style="margin-left:10px;">浏览量:{{rec_article.views}}</text>
 						</div>
 					</div>
-					<div style="width:95%;height:auto;border:2px solid pink;margin:10px 0 10px 0;display:flex;flex-direction:column;padding:3px;margin-top:5px;">
-						<div><a style="font-size:14px;font-family:宋体;color:black;" href="{% url 'detail' article.id %}"><strong>{{article.title}}</strong></a></div>
-						<div style="margin-left:auto;font-size:8px;color:#999;">
-							<text name="article_views" style="margin-left:10px;">浏览量:{{article.views}}</text>
-						</div>
-					</div>
+					{% endfor %}
 				</div>
 				
 			</div>
@@ -227,6 +303,8 @@
 			var mydisfavor=1;
 			var fav=0;
 			var disfav=0;
+			var favor_it=0;
+			<!--var interested_it=0;-->
 			var pub=[
 			{
 				pub_name:"砚湖杂志31",
@@ -234,15 +312,51 @@
 			},{
 				pub_name:"砚湖杂志32",
 				pub_tel:"132XXXX1212",
-			},{
-				pub_name:"砚湖杂志32",
-				pub_tel:"132XXXX1212",
-			},{
-				pub_name:"砚湖杂志34",
-				pub_tel:"132XXXX1212",
 			}
 			];
+			pub = {{interest_man|safe}};
+			//离开页面时提交表单
+			<!--window.onbeforeunload=fun();-->
+			<!--function fun(){-->
+				<!--&lt;!&ndash;document.getElementById("is_favor").value="favor_it";&ndash;&gt;-->
+				<!--&lt;!&ndash;return "确认离开吗，丢失密码";&ndash;&gt;-->
+				<!--alert("hello");-->
+				<!--document.getElementById("save_detail").submit();-->
+				<!--document.save_detail.submit();-->
+				<!--alert("hello");-->
 
+			<!--}-->
+
+			//ajax提交评论，刷新页面
+			var comment_num = {{comments|length}};
+			$(document).ready(function(){
+				$.ajaxSetup({
+					data:{csrfmiddlewaretoken:'{{ csrf_token }}'},
+				});
+				$("#sent_comment").click(function(){
+					var text = document.getElementById("comment").value;
+					<!--alert(text);-->
+					$.ajax({
+						url:"{% url 'ajax_addcomment' article.id %}",
+						type:"post",
+						data:{
+							comment:text
+						},
+						success:function(data){
+							$("#comment").val("");
+							comment_num +=1;
+							$("#num").text("共"+comment_num+"条评论");
+							$("#for_comment").prepend('<div style="margin-top:10px;"><div style="display:flex;flex-direction:rows;"><div style="color:#f1297d;font-size:14px;">{{user.name}}</div><div style="margin-left:10px;font-size:12px;">'+data.time+'</div></div><div style="font-size:14px;border-bottom:1px solid #999;padding-bottom:5px;">'+data.comment+'</div></div>');
+							<!--alert(data.time);-->
+						},
+						error:function(){
+							alert("false");
+						}
+					})
+					return false; //阻止表单再次提交引起跳转到奇怪页面。
+				});
+			});
+			
 			function haha(){
 				document.getElementById("publish").innerHTML="<div style='width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-right:10px solid #76f35b;position:absolute;left:776px;top:160px;'></div>";
 				document.getElementById("publish").innerHTML+="<div id='contain' style='background-color:#76f35b;border:1px solid green;width:220px;position:absolute;left:785px;top:150px;padding-bottom:5px;'>";
@@ -265,6 +379,7 @@
 				document.getElementById("publish").innerHTML="";
 			}
 			function favor(){
+				favor_it=1;
 				if(disfav==1){
 					return;
 				}
@@ -284,6 +399,7 @@
 				}
 			}
 			function disfavor(){
+				favor_it=-1;
 				if(fav==1){
 					return;
 				}

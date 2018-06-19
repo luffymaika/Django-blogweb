@@ -11,7 +11,7 @@ class Users(models.Model):
         ('e','editor'),
     )
     name = models.CharField(max_length=20, primary_key=True)
-    password = models.CharField(max_length=20)
+    password = models.CharField(max_length=32)
     identity =models.CharField('身份',max_length=1, choices=STATUS, default='w')
     contact_wey = models.CharField('联系方式',max_length=20, default="none")
     publishers_ISBN = models.CharField('出版商名字', max_length=20, default="none")

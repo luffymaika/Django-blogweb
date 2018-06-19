@@ -92,20 +92,23 @@ def register(request):
     ## 读取前端数据
     username = request.POST['user_name']
     password = request.POST['user_password']
-    if request.POST['identity_2']==2:
+    # print(password)
+    # print(request.POST['identity'])
+    if request.POST['identity']=='2':
         ISBN = request.POST['publisher_ISBN']
+        # print(ISBN)
         contact = request.POST['contact']
         newuser = Users(name=username, password=password, identity='e', contact_wey=contact, publishers_ISBN=ISBN)
     else:
         newuser = Users(name=username,password=password)
-
+    # newuser.save(force_insert=True)
     try:
         newuser.save(force_insert=True)
     except:
         content['message'] = json.dumps("帐号名已被注册，请重新注册")
         content['status'] = json.dumps("fail")
         return render(request, 'signin.html', content)
-        # return HttpResponse("帐号名已被注册，请重新注册")
+        return HttpResponse("帐号名已被注册，请重新注册")
     request.session['user'] = username
 
     # username = request.session['user']
@@ -120,19 +123,6 @@ def register(request):
     # content['article_num'] = len(articles)
     return render(request, 'index.html', content)
     # return HttpResponse("帐号注册成功")
-
-# def getArticle(request):
-#     if request.session['user']==None:
-#         render(request,'login.html',{'Message':"尚未登录，请登录后再请求文章"})
-#
-#     username = request.session['user']
-#     articles = Article.objects.filter(author=username)
-#     content={}
-#     article_list = []
-#     content["name"] = username
-#     content["ariticles"] = articles
-#     content['article_num'] = len(articles)
-#     return render(request, 'hello.html', content)
 
 def articleDetil(request, article_id):
     article_list = Article.objects.filter(id=article_id)
@@ -159,19 +149,63 @@ def articleDetil(request, article_id):
     # print(markdown.markdown(obj.body))
     comments = obj.blogcomment_set.all().order_by("-created_time")   ## 外键反向匹配，通过文章查询对应的多个comment
     publishers = User_atten.objects.filter(article_id=obj.id)
-
+    article_tag = obj.tags.all()
+    recom_art = recommend(article_tag)
     username = request.session['user']
     user = Users.objects.filter(name=username)
     content = {}
     content["user"] = user[0]
+    content['identity'] = json.dumps(user[0].identity)
     content["article"] = obj
     content["comments"] = comments
     user_articles = user[0].article_set.all()
     content['user_articles'] = user_articles
-    content['tags'] = obj.tags.all()
+    content['tags'] = article_tag
     content['publishers'] = serializers.serialize('json', publishers)
+    content['recommend'] = recom_art
+
+    if user[0].identity == 'e':
+        inter = User_atten.objects.filter(article_id=obj.id).filter(flower_id=username)
+        if len(inter)>0:    ## 已关注
+            content['interest']=json.dumps(1)
+        else:
+            content['interest']=json.dumps(0)
+    elif obj.author.name==username:
+        inter = User_atten.objects.filter(article_id = obj.id)
+        inter_json = []
+        for interest in inter:
+            dic = {"pub_name":interest.flower_id, "pub_tel":interest.flower_contact}
+            inter_json.append(dic)
+        # content['interest_man'] = serializers.serialize('json', inter)
+        content['interest_man'] = json.dumps(inter_json)
+        content['interest'] = json.dumps(0)
+    else:
+        inter = {}
+        content['interest_man'] = json.dumps(inter)
+        content['interest'] = json.dumps(0)
     # content["comment_num"] = len(comments)
     return render(request, 'detail.html', content)
+
+def recommend(tags):            #tags：当前待推荐博客的标签
+    blogs = Article.objects.all().order_by("-created_time")
+    articles = []
+    value = [0]*len(blogs)
+    for i in range(len(blogs)):
+        select_tags = blogs[i].tags.all()
+        for x in range(len(select_tags)):
+            for j in range(len(tags)):
+                if tags[j].name == select_tags[x].name:
+                    value[i] = value[i]+1
+    value_pop = value.copy()
+    for i in range(3):
+        a = value.index(max(value_pop))
+        b = value_pop.index(max(value_pop))
+        articles.append(blogs[a])
+        value_pop.pop(b)
+    # print(value)
+    # print(value_pop)
+    # print(articles)
+    return(articles[1:3])
 
 def sortByTime(request):
     username=request.session['user']
@@ -181,7 +215,7 @@ def sortByTime(request):
     content = {}
     content["user"] = user[0]
     content["articles"] = articles
-    user_articles = user.article_set.all()
+    user_articles = user[0].article_set.all()
     content['user_articles'] = user_articles
     # content['article_num'] = len(articles)
     return render(request, 'index.html', content)
@@ -248,7 +282,33 @@ def block_search(request):
     else:
         return redirect('login')
 
-# def
+
+def be_interest(request, article_id):
+    # print("it's interested")
+    interest = request.POST['is_interested']
+    # print(interest)
+    editor_name = request.session['user']
+    user = Users.objects.filter(name=editor_name)
+    if(user[0].identity=='w'):
+        return HttpResponse()
+
+    history = User_atten.objects.filter(article_id=article_id).filter(flower_id=editor_name)
+    if len(history)>0:
+        if interest=="1":
+            pass
+        if interest=="0":
+            history.delete()
+            return HttpResponse(json.dumps("你已经取消关注"), content_type='application/json')
+    else:
+        if interest=="0":
+            pass
+        if interest=="1":
+            newintest = User_atten(article_id=article_id, flower_id=user[0].name, flower_contact=user[0].contact_wey)
+            try:
+                newintest.save()
+            except Exception as e:
+                HttpResponse("error:%s"%e)
+    return HttpResponse(json.dumps("你已关注"), content_type='application/json')
 
 class ArticleView(ListView):
     template_name = "hello.html" ## 需要输出的模版

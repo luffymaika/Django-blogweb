@@ -46,8 +46,8 @@ def add_blog(request):
                     tag_object = Tag.objects.get(name=tag)
                     newarticle.tags.add(tag_object)
                     newarticle.save()
-        except:
-            return HttpResponse("文章创建出错了")
+        except Exception as e:
+            return HttpResponse("文章创建出错了%s"%e)
 
 
 

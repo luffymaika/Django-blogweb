@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scale=no" name="viewport"/>
 		<script src="/static/js/jquery-3.3.1.min.js"></script>
-		<title>博客王</title>
+		<title>温雪纷飞</title>
 		<style type="text/css">
 			#your-tag:hover{
 				width:50px;
@@ -71,7 +71,7 @@
 				<div style="display:flex;flex-direction:rows;width:40%;">
 					<img src="/static/images/apple.jpg" style="height:100px;width:46%;border:1px solid #808080;"></img>
 					<div id="index" style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;"><a href="{% url 'home' %}" style="text-decoration:none">首页</a></div>
-					<div id="index" style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;">我的博客</div>
+					<div id="index" style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;">我的文章</div>
 				</div>
 				<div style="display:flex;flex-direction:rows;width:213px;margin-top:60px;margin-left:auto;">
 					<div style="width:40px;height:40px;display:flex;flex-direction:column;">
@@ -87,10 +87,10 @@
 				<div style="display:flex;flex-direction:column;">
 					<div style="width:65px;height:50px;display:flex;flex-direction:column;">
 						<img src="/static/images/write.png" style="height:30px;width:35px;"></img>
-						<text style="height:20px;font-size:14px;">写博文</text>
+						<text style="height:20px;font-size:14px;">写文章</text>
 					</div>
 					<div style="display:flex;flex-direction:rows;margin-top:10px;">
-						<input type="text" name="title" placeholder="标题是博客的眼睛哦~" value="" style="height:27px;width:500px;border:2px solid #f1297d;"/>
+						<input type="text" name="title" placeholder="标题是文章的眼睛哦~" value="" style="height:27px;width:500px;border:2px solid #f1297d;"/>
 						<input type="submit" style="width:50px;height:27px;line-height:27px;margin-left:60px;font-size:14px;display:flex;justify-content:center;border:1px solid #f1297d;background-color:white;" value="发表" />
 					</div>
 					<!--已选标签栏-->
@@ -319,7 +319,7 @@
 	var mytags = document.getElementById("my_sign").childNodes;
 	var tags = "";
 	var mine = "";
-	alert("hello");
+	//alert("hello");
 	var oldmytags = {{olduser_tags|safe}};	//从服务器处接收原有自创标签
 	for(i=0;i<content.length;i++){		//从子节点中提取出标签值
 		tags += content[i].value+" ";

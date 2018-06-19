@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scale=no" name="viewport"/>
-		<title>博客王</title>
+		<title>温雪纷飞</title>
 		<style type="text/css">
 			#index:hover{
 				background-color:#d02866;
@@ -14,8 +14,11 @@
 				color:white;
 			}
 		</style>
+		<script>
+			var show_publisher;
+		</script>
 	</head>
-	<body  style="display:flex;flex-direction:rows;">
+	<body  style="display:flex;flex-direction:rows;width:1300px;" onunload="">
 	
 		<div style="width:65%;height:auto;border-right:1px solid #808080;">
 			<div style="display:flex;flex-direction:rows;">
@@ -36,13 +39,40 @@
 				<input type="submit" value="搜索" style="height:22px;margin-top:68px;"/>
 			</div>
 			<div style="width:90%;margin-left:auto;border-top:3px solid red;">
-				<!--标题和日期-->
-				<div style="display:flex;flex-direction:rows;">
-					<div style="width:auto;height:50px;display:flex;flex-direction:column;margin-top:20px;">
-						<div style="font-size:18px;width:400px;border:1px solid #d02866;">标题：{{article.title}}</div>
-						<div style="font-size:14px;width:150px;margin-left:auto;">{{article.created_time}}</div>
+				<!--标题、作者和日期-->
+				<div style="display:flex;flex-direction:rows;margin-bottom:20px;">
+					<div style="width:auto;height:50px;display:flex;flex-direction:column;margin-top:20px;margin-bottom:20px;">
+						<div style="font-size:20px;width:400px;display:flex;justify-content:center;margin-bottom:20px;">
+							<strong>标题：{{article.title}}</strong>
+						</div>
+						<div style="display:flex;flex-direction:rows;">
+							<a href="##" style="">作者:{{article.author.name}}</a>
+							<div style="font-size:14px;margin-left:auto;">{{article.created_time}}</div>
+						</div>
 					</div>
-					<div style="display:flex;flex-direction:rows;margin-right:110px;margin-top:40px;margin-left:auto;">
+					
+					<div style="display:flex;flex-direction:rows;margin-left:auto;margin-right:130px;border-bottom:2px solid red;" onmousemove="haha()" onmouseout="nohaha()">
+						<div style="display:flex;flex-direction:column;width:50px;">
+							<img src="/static/images/message.png" style="margin:auto;" onclick="interst()"></img>
+							<div id='interst' style="width:50px;">感兴趣请联系</div>
+						</div>
+						<text style="margin-top:auto;margin-bottom:auto;margin-left:20px;">$2</text>
+					</div>
+					<div id="publish"></div>
+					<!--弹出出版商部分-->
+					
+				</div>
+				<!--标签和点赞-->
+				<div style="display:flex;width:85%">
+					<div style="width:100%;height:auto;px;margin-bottom:10px;padding-top:auto;padding-bottom:auto;">
+						<img src="/static/images/marks.png" style="width:22px;height:22rpx;"></img>
+						<text style="color:blue;font-size:14px;"><strong>标签</strong></text>
+						<!--文章标签:循环时保留一个即可-->
+						{% for tag in tags %}
+						<text style="font-size:13px;height:20px;width:auto;background-color:pink;padding:0 10px 0 10px;"><strong>{{tag.name}}</strong></text>
+						{% endfor %}
+					</div>
+					<div style="display:flex;flex-direction:rows;">
 						<div style="width:35px;height:50px;display:flex;flex-direction:column;" onclick="favor()">
 							<img src="/static/images/good.png" id="good_favor" style="height:20px;width:20px;"></img>
 							<text style="height:20px;font-size:14px;">赞 <text id="favor">12</text></text>
@@ -52,21 +82,21 @@
 							<text style="height:20px;font-size:14px;">踩 <text id="disfavor">2</text></text>
 						</div>
 					</div>
-					
 				</div>
 				<!--文章区-->
 				<div style="width:85%;border:2px solid pink;margin:0 0 10px 0;font-size:16px;">
 					<div style="width:100%;padding:10px;">{{article.body|safe}}</div>
 					<!--<p>{{article.body|safe}}</p>-->
 				</div>
-
+				<div style="width:85%;margin-bottom:30px;display:flex;justify-content:center;"><text style="color:red;font-size:14px;border-bottom:1px solid red;margin-:auto;">
+					<strong>版权原创作品，严禁未经授权转载，否则追究法律责任！</strong></text></div>
 				<!--评论区-->
 				<div style="width:85%;height:auto;border:1px solid #808080;">
 					<div style="width:100%;height:auto;padding:10px;">
-						<div style="font-size:16px;width:100px;margin:auto;"><strong>发表评论</strong></div>
+						<div style="font-size:16px;width:100px;margin:auto;"><strong>评论区</strong></div>
 						<div style="margin:5px 0px 5px 0px;display:flex;flex-direction:rows;">
 							<div style="font-size:14px;width:40px;">名字:</div>
-							
+
 							<div>{{user.name}}</div>
 						</div>
 					<form action="{% url 'add_comment' article.id%}" method="post">
@@ -76,18 +106,35 @@
 							<textarea name="comment" value="" style="width:55%;" rows="4"></textarea>
 						</div>
 						<button style="margin-top:10px;">发表</button>
-						<div style="font-size:14px;align:center;width:120px;margin:auto;">共{{comments|length}}条评论</div>
-						<!--<div style="color:#808080;font-size:14px;">暂无评论</div>-->
-						{% for comment in comments %}
-							<p>{{comment.user_name.name}} <br>
-								{{comment.body}}<br>
-								{{comment.created_time|date:"Y-m-d"}}
-							</p>
-						{% endfor %}
+						<!--<div style="font-size:14px;align:center;width:120px;margin:auto;">共{{comments|length}}条评论</div>-->
+						<!--&lt;!&ndash;<div style="color:#808080;font-size:14px;">暂无评论</div>&ndash;&gt;-->
+						<!--{% for comment in comments %}-->
+							<!--<p>{{comment.user_name.name}} <br>-->
+								<!--{{comment.body}}<br>-->
+								<!--{{comment.created_time|date:"Y-m-d"}}-->
+							<!--</p>-->
+						<!--{% endfor %}-->
 					</form>
 					</div>
-					
 				</div>
+				<!--总共的评论-->
+				<div style="margin:10px 0 10px 0;border-top:1px solid red;width:85%;">
+					<div style="display:flex;flex-direction:rows;margin:20px 0 15px 0;">
+						<text style="color:#f1297d;font-size:16px;"><strong>最新评论</strong></text>
+						<div style="font-size:14px;align:center;width:200px;border:1px solid #f1297d;">共{{comments|length}}条评论</div>
+					</div>
+					<!--评论循环的主体-->
+					{% for comment in comments %}
+					<div style="margin-top:10px;">
+						<div style="display:flex;flex-direction:rows;">
+							<div style="color:#f1297d;font-size:14px;">{{comment.user_name.name}}</div>
+							<div style="margin-left:10px;font-size:12px;">{{comment.created_time|date:"Y-m-d"}}</div>
+						</div>
+						<div style="font-size:14px;border-bottom:1px solid #999;padding-bottom:5px;">{{comment.body}}</div>
+					</div>
+					{% endfor %}
+				</div>
+				
 			</div>
 		</div>
 		
@@ -105,7 +152,7 @@
 					<div style="margin-bottom:20px;"><text style="font-size:14px;">个人信息</text></div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
+							<img src="/static/images/nickname.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">昵称</text>
 						</div>
 						<!--<div style="line-height:39px;margin-left:20px;">{{user.name}}</div>-->
@@ -113,15 +160,15 @@
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
+							<img src="/static/images/my_sign.png" style="height:21px;width:21px;" ></img>
 							<text style="font-size:14px;">个性签名</text>
 						</div>
 						<div style="line-height:39px;margin-left:20px;">暂无信息</div>
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:56px;display:flex;flex-direction:column;">
-							<img src="/static/images/home.png" style="height:20px;width:30px;" ></img>
-							<text style="font-size:14px;">博客数</text>
+							<img src="/static/images/my_works.png" style="height:21px;width:21px;" ></img>
+							<text style="font-size:14px;">作品数</text>
 						</div>
 						<div style="line-height:39px;margin-left:20px;">{{user_articles|length}}</div>
 					</div>
@@ -151,7 +198,21 @@
 					</div>
 				</div>
 				<input value="搜索" style="width:60px;color:#808080;margin-left:100px;text-align:center;" readonly="readonly"/>
-				<div style="height:100px;border:2px dashed pink;">我是广告位</div>
+				<div style="height:auto;border:2px dashed pink;margin-top:50px;">
+					<div>
+						<img src="/static/images/heart.png"></img>
+						<text style="color:#f1297d;">为您推荐</text>
+					</div>
+					<!--推荐部分的主体-->
+					{% for rec_article in recommend %}
+					<div style="width:95%;height:auto;border:2px solid pink;margin:10px 0 10px 0;display:flex;flex-direction:column;padding:3px;margin-top:5px;">
+						<div><a style="font-size:14px;font-family:宋体;color:black;" href="{% url 'detail' rec_article.id %}"><strong>{{rec_article.title}}</strong></a></div>
+						<div style="margin-left:auto;font-size:8px;color:#999;">
+							<text name="article_views" style="margin-left:10px;">浏览量:{{rec_article.views}}</text>
+						</div>
+					</div>
+					{% endfor %}
+				</div>
 				
 			</div>
 			
@@ -162,8 +223,45 @@
 			var mydisfavor=1;
 			var fav=0;
 			var disfav=0;
+			var pub=[
+			{
+				pub_name:"砚湖杂志31",
+				pub_tel:"132XXXX1212",
+			},{
+				pub_name:"砚湖杂志32",
+				pub_tel:"132XXXX1212",
+			},{
+				pub_name:"砚湖杂志32",
+				pub_tel:"132XXXX1212",
+			},{
+				pub_name:"砚湖杂志34",
+				pub_tel:"132XXXX1212",
+			}
+			];
+
+			function haha(){
+				document.getElementById("publish").innerHTML="<div style='width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-right:10px solid #76f35b;position:absolute;left:776px;top:160px;'></div>";
+				document.getElementById("publish").innerHTML+="<div id='contain' style='background-color:#76f35b;border:1px solid green;width:220px;position:absolute;left:785px;top:150px;padding-bottom:5px;'>";
+				for(var i=0;i<=pub.length-1;i++){
+					document.getElementById("contain").innerHTML+="<div style='display:flex;flex-direction:column;font-size:14px;padding:10px 5px 5px 5px;'><text>出版商:"+pub[i].pub_name+"</text><text>联系方式："+pub[i].pub_tel+"</text>";
+					if(i!=pub.length-1){
+						document.getElementById("contain").innerHTML+="<div style='height:2px;width:100%;background-color:yellow;margin-top:5px;'></div>";
+					}
+					document.getElementById("contain").innerHTML+="</div>";
+				}
+				document.getElementById("publish").innerHTML+="</div>";
+			}
+
 			function logout(){
 				window.location.href="login.html";
+			}
+
+			function interst(){
+				document.getElementById("interst").style.color="red";
+			}
+
+			function nohaha(){
+				document.getElementById("publish").innerHTML="";
 			}
 			function favor(){
 				if(disfav==1){
@@ -199,6 +297,7 @@
 					document.getElementById("disfavor").style.color="gray";
 				}
 			}
+			
 		</script>
 	</body>
 </html>

@@ -2,12 +2,13 @@
 <html>
 	<head>  
 		<meta http-equiv="Content-Type">  
-		<title>用户登录</title>  
+		<title>用户登录</title>
+		<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
 	</head>
 	<script>
 		var identity=1;
 		function choose_identity_1(){
-			submit_identy = document.getElementById("identity_2");
+			submit_identy = document.getElementById("identity");
 			submit_identy.value = 1;
 			identity=1;
 			document.getElementById("sign_name_part").innerHTML="<div id='nickname' style='display:flex;flex-direction:rows;margin:10px 0 10px 0;'></div>";
@@ -15,7 +16,7 @@
 			}
 		function choose_identity_2(){
 			identity=2;
-			submit_identy = document.getElementById("identity_2");
+			submit_identy = document.getElementById("identity");
 			submit_identy.value = 2;
 			document.getElementById("sign_name_part").innerHTML="<div id='publisher_name' style='display:flex;flex-direction:rows;margin:10px 0 10px 0;'></div><div id='publisher_ISBN' style='display:flex;flex-direction:rows;margin:10px 0 10px 0;'></div><div id='publisher_tel' style='display:flex;flex-direction:rows;margin:10px 0 10px 0;'></div>";
 			document.getElementById("publisher_name").innerHTML="<div style='width:100px;height:45px;line-height:45px;background-color:white;'>出版商名称：</div><input type='text' name='user_name' value='' style='height:45px;width:240px;font-size:20px;margin-left:5px;' id='publisher'/><span id='publisher1'>   </span>";
@@ -37,10 +38,18 @@
     if(document.getElementById("password").value!=
         document.getElementById("password_check").value)
     {
-    	alert("两次密码的输入不一致")
+    	alert("两次密码的输入不一致");
+    	return false;
         <!--document.getElementById("warning").innerHTML="   两次密码的输入不一致";-->
     }else{
         document.getElementById("warning").innerHTML="   ";
+        var psw = document.getElementById("password")
+        var psw2 = document.getElementById("password_check")
+        var hash = md5(psw.value);
+        psw.value = hash;
+        psw2.value = hash;
+        return true;
+        <!--alert(hash);-->
     }
     if(document.getElementById("user_name")==""){
     	alert("请输入账户名")
@@ -62,6 +71,7 @@
 					<strong>欢迎来到温雪纷飞！</strong>
 				</div>
 				<div style="width:360px;height:auto;background-color:pink;padding:30px 70px 10px 70px;">
+					<input type="hidden" name="identity" id="identity">
 					<div style="display:flex;flex-direction:rows;">
 						<div style="width:80px;height:35px;line-height:35px;background-color:white;">我是：</div>
 						<div style="height:35px;line-height:35px;margin-left:30px;display:flex;flex-direction:rows;">
@@ -82,11 +92,11 @@
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:100px;height:45px;line-height:45px;background-color:white;">确认密码：</div>
-						<input type="password" name="user_password1" value="" style="height:45px;width:240px;font-size:20px;margin-left:5px;" id="password_check" onblur="check()"/>
+						<input type="password" name="user_password1" value="" style="height:45px;width:240px;font-size:20px;margin-left:5px;" id="password_check" />
 						<span id="warning">   </span>
 					</div>
 					<div style="display:flex;flex-direction:column;">
-						<button style="width:90px;height:45px;font-size:15px;margin:20px 0 10px 0;background-color:white;border:2px solid pink;" type="submit">注册</button>
+						<button style="width:90px;height:45px;font-size:15px;margin:20px 0 10px 0;background-color:white;border:2px solid pink;" type="submit" onclick="check()">注册</button>
 						<div style="margin-top:10px;"><a href="{%url 'login' %}">已有账号？快来登录吧</a></div>
 					</div>
 				</div>

@@ -31,13 +31,16 @@ urlpatterns = [
     path('login/', view_change.logout, name='logout'), ## 退出登录
     # path('getarticle/', views.getArticle, name='getarticle'), ## 获取文章列表
     ## URL可以通过named group方式传递指定参数，语法为： (?P<name>pattern)， name 可以理解为所要传递的参数的名称，pattern代表所要匹配的模式
-    path('aritcle/(?P<article_id>\d+)/', views.articleDetil, name = 'detail'),
+
     path(r'search/', views.block_search, name='search'),       ## 搜索文章，返回文章列表页（主页）
     path('chosebytime/', views.choseByTime, name='chosebytime'),
     path('sortbytime/', views.sortByTime, name='sortbytime'),     ## 根据时间排序
     path('sortbyviews/', views.sortByViews, name='sortbyview'), ## 根据浏览量排序  ---------------
-    path('article/(?P<article_id>\d+)/comment/', Comment_views.CommentView, name='comment'),    ## 进入文章详情页
+    # path('article/(?P<article_id>\d+)/comment/', Comment_views.CommentView, name='comment'),    ## 进入文章详情页
     path('article/(?P<article_id>\d+)/write_comment/', Comment_views.addComment, name='add_comment'),   ## 添加文章评论，更新文章详情页  -------
+    path('article/(?P<article_id>\d+)/ajax_writecomment/', Comment_views.ajax_addComment, name='ajax_addcomment'),   ## ajax添加文章评论，更新文章详情页  -------
     path('writeblog_page/', view_change.writeBlog, name='writeblog'),    ## 跳转撰写文章的页面
     path('writeblog/', view_blog.add_blog, name='addblog'), ## 保存撰写的文章      --------------
+    path('aritcle/(?P<article_id>\d+)/interested/', views.be_interest, name='interest'),
+    path('aritcle/(?P<article_id>\d+)/', views.articleDetil, name = 'detail'),
 ]

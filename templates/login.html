@@ -1,7 +1,8 @@
 {% load staticfiles%}
 <html>
 	<head>  
-		<meta http-equiv="Content-Type">  
+		<meta http-equiv="Content-Type">
+		<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
 		<title>用户登录</title>  
 	</head> 
 	<script>
@@ -9,6 +10,13 @@
 		var message = {{message|safe}}
 		if(status =="fail"){
 			alert(message)
+		}
+
+		function tomd(){
+        	var psw = document.getElementById("password")
+        	var hash = md5(psw.value);
+        	psw.value = hash;
+        	return true;
 		}
 	</script>
 	<body>
@@ -31,10 +39,10 @@
 					</div>
 					<div style="display:flex;flex-direction:rows;margin:10px 0 10px 0;">
 						<div style="width:65px;height:45px;line-height:45px;">密码：</div>
-						<input type="password" name="password" value="" style="height:45px;width:240px;font-size:20px;" />
+						<input type="password" name="password" id="password" value="" style="height:45px;width:240px;font-size:20px;" />
 					</div>
 					<div style="display:flex;flex-direction:column;">
-						<button onclick="log()" style="width:90px;height:45px;font-size:15px;margin:20px 0 10px 0;background-color:white;border:2px solid pink;">登录</button>
+						<button type="submit" onclick="tomd()" style="width:90px;height:45px;font-size:15px;margin:20px 0 10px 0;background-color:white;border:2px solid pink;">登录</button>
 						<div style="margin-top:30px;"><a href="{%url 'lognin' %}" >还没有账号？快注册吧！</a></div>
 					</div>
 					
@@ -45,6 +53,7 @@
 			</div>
 		<script>
 			function log(){
+				tomd();
 				window.location.href="index.html";
 			}
 		</script>
