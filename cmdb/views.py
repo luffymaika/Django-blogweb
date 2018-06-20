@@ -179,10 +179,12 @@ def articleDetil(request, article_id):
         # content['interest_man'] = serializers.serialize('json', inter)
         content['interest_man'] = json.dumps(inter_json)
         content['interest'] = json.dumps(0)
+        content['interest_num'] = len(inter)
     else:
         inter = {}
         content['interest_man'] = json.dumps(inter)
         content['interest'] = json.dumps(0)
+        content['interest_num'] = 0;
     # content["comment_num"] = len(comments)
     return render(request, 'detail.html', content)
 

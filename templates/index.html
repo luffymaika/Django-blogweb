@@ -20,10 +20,9 @@
 		<div style="width:65%;height:98%;border-right:1px solid #808080;">
 			<div style="display:flex;flex-direction:rows;">
 				<div style="display:flex;flex-direction:rows;width:40%;">
-					<img src="/static/images/apple.jpg" style="height:100px;width:auto;border:1px solid #808080;"></img>
-					<div id="index" style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;"><a href="{% url 'home' %}" style="text-decoration:none">首页</a></div>
-					<div id="index" style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;"><a href="{% url 'home' %}" style="text-decoration:none">我的博客</a></div>
-					<div id="kinds" style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;">科技</div>
+					<img src="/static/images/logo.jpg" style="height:100px;width:auto;border:1px solid #808080;"></img>
+					<div id="index" style="width:27%;height:40px;border:1px solid #808080;line-height:40px;margin-top:60px;text-align:center;"><a href="{% url 'home' %}" style="text-decoration:none">主页</a></div>
+					
 				</div>
 				<div style="display:flex;flex-direction:rows;width:213px;margin-top:60px;margin-left:auto;">
 					<div style="width:40px;height:40px;display:flex;flex-direction:column;">
@@ -40,7 +39,7 @@
 				<div style="display:flex;flex-direction:rows;margin-bottom:30px;margin-top:5px;">
 					<div style="width:100px;height:50px;display:flex;flex-direction:column;">
 					<img src="/static/images/write.png" style="height:30px;width:35px;"></img>
-					<text style="height:20px;font-size:14px;">博客列表</text>
+					<text style="height:20px;font-size:14px;">作品列表</text>
 					</div>
 					<div style="margin-left:auto;display:flex;flex-direction:rows;margin-top:auto;margin-right:50px;">
 						<!--<div style="font-size:10px;width:65px;border:1px solid #808080;border-radius:2px;height:18px;text-align:center;"><text>综合排序</text></div>-->
@@ -49,7 +48,7 @@
 					</div>
 					<div style="width:100px;height:50px;display:flex;flex-direction:column;margin-left:auto;" onclick="window.location.href='write_blog.html'">
 						<img src="/static/images/pen.png" style="height:30px;width:35px;"></img>
-						<a class="button" href="{% url 'writeblog' %}" style="">写博客</a>
+						<a class="button" href="{% url 'writeblog' %}" style="">写好文</a>
 						<!--<text style="height:20px;font-size:14px;">写博客</text>-->
 					</div>
 				</div>
@@ -148,7 +147,7 @@
 				</div>
 				<input type="submit" value="搜索" style="width:60px;color:red;margin-left:100px;"/>
 	</form>
-				<div style="height:100px;border:2px dashed pink;">我是广告位</div>
+				
 				
 			</div>
 			

@@ -26,7 +26,8 @@ def writeBlog(request):
     return render(request, 'write_blog.html', content)
 
 def logout(request):
-    del request.session['user']
+    # del request.session['user']
+    request.session.clear()
     return render(request, 'login.html')
 
 def lognin(request):
